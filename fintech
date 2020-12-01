@@ -1,0 +1,49 @@
+def initialize(context):
+
+  context.security_list = [sid(5060), sid(7792), sid(1991, sid(2445), sid(1981)]
+  
+  schedule_function(rebalance, 
+                    data_rules.week_start()
+                    time_rules.mkt_open())
+  
+  schedule_function(record_vars, "rebalance, 
+                                  data_rules.week_start()
+                                  time_rules.mkt_open())
+                               
+  def_compute_weights(context,data):
+  
+    hist = data.history(context.security_list,'price' 50, '1d')
+    
+    prices_10 = hist[-10:]
+    prices_50 = hist[-50:]
+    
+    sma_10=prices_10.mean():
+    sma_50=prices_50.mean():
+    
+    raw_weight=(sma_10 - sma_50)/sma_50
+    
+    normalize_weights = raw_weights/raw_weights.abs().sum()
+    
+    return normalized_weights:
+    
+def rebalance(context, data):
+
+  weights = complete_weights(context, data)
+  
+  for security in context.security_list:
+    if data.can_trade(security):
+    order_target_percent(security, weights[security])
+    
+def record_vars(context, data):
+
+  longs = shorts = 0 
+  
+for position in context.portfolio.position.intervalues():
+  if position.amount > 0:
+    longs += 1
+  elif.position.amount < 0:
+    shorts += 1
+    
+ record(leverage=context.account.leverage, longs_count = longs, shorts_count = shorts)
+    
+    
